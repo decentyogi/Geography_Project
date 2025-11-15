@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>हिमालयी नदियाँ MCQs</title>
+<!-- Google Font for Devanagari -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    margin: 0;
+    background: linear-gradient(to bottom, #e0f7fa, #b3e5fc, #81d4fa);
+    color: #033e57;
+    padding-bottom: 60px;
+    overflow-x: hidden;
+  }
+
+  header {
+    background: linear-gradient(120deg, #0288d1, #03a9f4);
+    color: white;
+    text-align: center;
+    padding: 25px 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border-bottom: 3px solid #0277bd;
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 2em;
+    letter-spacing: 1px;
+  }
+
+  .wave {
+    position: relative;
+    height: 40px;
+    background: url('https://i.imgur.com/YXoU8p2.png') repeat-x;
+    background-size: contain;
+    animation: flow 15s linear infinite;
+    opacity: 0.3;
+  }
+
+  @keyframes flow {
+    from { background-position-x: 0; }
+    to { background-position-x: 1000px; }
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 15px;
+  }
+
+  .qcard {
+    background: #ffffffd9;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 20px 25px;
+    margin-bottom: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+
+  .qcard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+  }
+
+  .question {
+    font-weight: 700;
+    color: #01579b;
+    font-size: 1.15em;
+    margin-bottom: 12px;
+  }
+
+  .option {
+    margin-left: 15px;
+    margin-bottom: 4px;
+    padding-left: 8px;
+  }
+
+  .correct {
+    color: #1b5e20;
+    font-weight: 600;
+    background: #c8e6c9;
+    padding: 6px 10px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 8px;
+  }
+
+  .option img {
+  display: none;
+  width: 200px;
+  border: 2px solid #0288d1;
+  border-radius: 10px;
+  margin-top: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+
+  
+
+.option:hover img {
+  display: block;
+  position: absolute;
+  z-index: 10;
+  background: white;
+}
+
+
+  footer {
+    text-align: center;
+    font-size: 0.9em;
+    color: #01579b;
+    background: rgba(255,255,255,0.3);
+    padding: 12px;
+    border-top: 2px solid #4fc3f7;
+  }
+
+  /* Subtle ripple hover effect */
+  .qcard::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: 60%;
+    height: 5px;
+    background: radial-gradient(circle, rgba(3,169,244,0.5), transparent 70%);
+    transform: translateX(-50%);
+  }
+
+</style>
+</head>
+<body>
+
+<h1>हिमालयी नदियाँ - 50 बहुविकल्पीय प्रश्न</h1>
+
+<div id="questions"></div>
+
+<script>
+// Hindi to image name map (so spelling variations still match correctly)
+const imageMap = {
+  'कृष्णा': 'krishna',
+  'गोदावरी': 'godavari',
+  'महानदी': 'mahanadi',
+  'नर्मदा': 'narmada',
+  'कावेरी': 'kaveri',
+  'ताप्ती': 'tapti',
+  'माही': 'mahi',
+  'साबरमती': 'sabarmati',
+  'पेन्नार': 'pennar',
+  'शरावती': 'sharavathi',
+  'भीमा': 'bhima',
+  'तुंगभद्रा': 'tungabhadra',
+  'इंद्रावती': 'indravati',
+  'प्राणहिता': 'pranhita',
+  'वैनगंगा': 'wainganga',
+  'दामोदर': 'damodar',
+  'वैगई': 'vaigai',
+  'मंजरा': 'manjra',
+  'वारधा': 'wardha',
+  'पैनगंगा': 'penganga',
+  'सुवर्णरेखा': 'subarnarekha',
+  // Major Himalayan Rivers
+  'गंगा': 'ganga.jpg',
+  'यमुना': 'yamuna.jpg',
+  'ब्रह्मपुत्र': 'brahmaputra.jpg',
+  'सिंधु': 'indus.jpg',
+
+  // Ganga System
+  'अलकनंदा': 'alaknanda.jpg',
+  'भागीरथी': 'bhagirathi.jpg',
+  'मंदाकिनी': 'mandakini.jpg',
+  'धौलीगंगा': 'dhauli_ganga.jpg',
+  'गोमती': 'gomti.jpg',
+  'घाघरा': 'ghaghra.jpg',
+  'गंडक': 'gandak.jpg',
+  'कोसी': 'kosi.jpg',
+  'रामगंगा': 'ramganga.jpg',
+  'सोन': 'son.jpg',
+  'दामोदर': 'damodar.jpg',
+
+  // Brahmaputra System
+  'लोहित': 'lohit.jpg',
+  'दिबांग': 'dibang.jpg',
+  'सियांग': 'siang.jpg',
+  'मेघना': 'meghna.jpg',
+  'पद्मा': 'padma.jpg',
+  'जमुना': 'jamuna_bd.jpg',
+
+  // Punjab (Indus) System
+  'सतलज': 'sutlej.jpg',
+  'चिनाब': 'chenab.jpg',
+  'रावी': 'ravi.jpg',
+  'झेलम': 'jhelum.jpg',
+  'ब्यास': 'beas.jpg',
+
+  // Peninsular West-Flowing
+  'नर्मदा': 'narmada.jpg',
+  'ताप्ती': 'tapi.jpg',
+  'माही': 'mahi.jpg',
+  'लूणी': 'luni.jpg',
+
+  // Other Frequent Option Rivers
+  'शारदा': 'sharda.jpg',
+  'महाकाली': 'mahakali.jpg',
+  'कर्णाली': 'karnali.jpg',
+  'त्रिशुली': 'trishuli.jpg',
+
+  // Lakes / Sources
+  'मानसरोवर': 'manasarovar.jpg',
+  'गोमुख': 'gomukh.jpg',
+  'शेष नाग झील': 'sheshnag.jpg',
+  'डल झील': 'dal_lake.jpg',
+  'वेरीनाग': 'verinag.jpg',
+
+  // Major Places / Confluences (Prayags)
+  'देवप्रयाग': 'devprayag.jpg',
+  'रुद्रप्रयाग': 'rudraprayag.jpg',
+  'विष्णुप्रयाग': 'vishnuprayag.jpg',
+  'कर्णप्रयाग': 'karnaprayag.jpg',
+  'नंदप्रयाग': 'nandprayag.jpg',
+
+  // Countries (for river origin)
+  'चीन': 'china.jpg',
+  'नेपाल': 'nepal.jpg',
+  'भूटान': 'bhutan.jpg',
+
+  // BONUS: Common Special Options
+  'U-Turn': 'uturn.jpg',
+  'सुंदरवन डेल्टा': 'sundarban.jpg',
+};
+
+// Sample questions (replace with all 50 if needed)
+const questions = [
+  {q: 'गंगा नदी का उद्गम स्थल कहाँ है?', opts: ['सतोपंथ ग्लेशियर', 'यमुनोत्री ग्लेशियर', 'गंगोत्री ग्लेशियर (गोमुख)', 'सियाचिन ग्लेशियर'], ans: 3},
+  {q: 'किस स्थान पर भागीरथी और अलकनंदा नदियाँ मिलकर गंगा कहलाती हैं?', opts: ['रुद्रप्रयाग', 'देवप्रयाग', 'कर्णप्रयाग', 'विष्णुप्रयाग'], ans: 2},
+  {q: 'सिंधु नदी का उद्गम स्थल कहाँ है?', opts: ['रोहतांग दर्रा', 'मानसरोवर झील के पास', 'शेष नाग झील', 'नामचा बरवा'], ans: 2},
+  {q: 'तिब्बत में ब्रह्मपुत्र नदी को किस नाम से जाना जाता है?', opts: ['जमुना', 'मेघना', 'सांगपो (Tsangpo)', 'दिहांग'], ans: 3},
+  {q: 'भारत की सबसे लंबी सहायक नदी कौन सी है?', opts: ['सोन', 'चंबल', 'ब्रह्मपुत्र', 'यमुना'], ans: 4},
+  {q: 'यमुना नदी का उद्गम स्थल कौन सा है?', opts: ['केदारनाथ', 'यमुनोत्री ग्लेशियर (बंदरपुंछ)', 'चौराबारी ताल', 'पिंडारी ग्लेशियर'], ans: 2},
+  {q: '\'बिहार का शोक\' (Sorrow of Bihar) किस नदी को कहा जाता है, जो अपना रास्ता बदलने के लिए प्रसिद्ध है?', opts: ['दामोदर', 'गंडक', 'कोसी', 'सोन'], ans: 3},
+  {q: 'निम्नलिखित में से कौन सी नदी सिंधु नदी की सहायक नदी नहीं है?', opts: ['सतलज', 'चिनाब', 'रावी', 'चंबल'], ans: 4},
+  {q: 'पंचनद में कौन सी नदी शामिल नहीं है?', opts: ['झेलम', 'ब्यास', 'रावी', 'गोमती'], ans: 4},
+  {q: 'गंगा नदी को बांग्लादेश में किस नाम से जाना जाता है?', opts: ['मेघना', 'जमुना', 'पद्मा', 'हुगली'], ans: 3},
+  {q: 'ब्रह्मपुत्र नदी को असम में क्या कहा जाता है?', opts: ['लोहित', 'दिबांग', 'ब्रह्मपुत्र', 'सियांग'], ans: 3},
+  {q: 'सतलज नदी किस दर्रे से होकर भारत में प्रवेश करती है?', opts: ['नाथूला', 'शिपकी ला', 'बोमडिला', 'लिपुलेख'], ans: 2},
+  {q: 'गंगा और ब्रह्मपुत्र की संयुक्त धारा किस नाम से जानी जाती है?', opts: ['पद्मा', 'जमुना', 'मेघना', 'हुगली'], ans: 3},
+  {q: 'भारत का सबसे बड़ा नदी डेल्टा, सुंदरवन डेल्टा, कौन सी नदियाँ बनाती हैं?', opts: ['महानदी और गोदावरी', 'कृष्णा और कावेरी', 'गंगा और ब्रह्मपुत्र', 'नर्मदा और ताप्ती'], ans: 3},
+  {q: 'हरिद्वार में गंगा नदी किस क्षेत्र में प्रवेश करती है?', opts: ['मैदानी क्षेत्र', 'पहाड़ी क्षेत्र', 'पठारी क्षेत्र', 'तराई क्षेत्र'], ans: 1},
+  {q: 'चिनाब नदी का उद्गम कहाँ से होता है?', opts: ['शेष नाग झील', 'बड़ालाचा दर्रा (Baralacha La)', 'रोहतांग दर्रा', 'वेरिनाग स्रोत'], ans: 2},
+  {q: 'अलकनंदा और मंदाकिनी नदी किस स्थान पर मिलती हैं?', opts: ['देवप्रयाग', 'रुद्रप्रयाग', 'कर्णप्रयाग', 'विष्णुप्रयाग'], ans: 2},
+  {q: 'भारत में किस नदी को \'लाल नदी\' (Red River) भी कहा जाता है?', opts: ['गंगा', 'सिंधु', 'लोहित', 'सतलज'], ans: 3},
+  {q: 'अरुणाचल प्रदेश में ब्रह्मपुत्र को किस नाम से जाना जाता है?', opts: ['पद्मा', 'जमुना', 'दिहांग (या सियांग)', 'सांगपो'], ans: 3},
+  {q: 'झेलम नदी का उद्गम कहाँ से होता है?', opts: ['रोहतांग दर्रा', 'शेष नाग झील के पास (वेरिनाग)', 'मानसरोवर', 'गंगोत्री'], ans: 2},
+  {q: '\'इंडस वॉटर ट्रीटी\' (सिंधु जल संधि) कब हुई थी?', opts: ['1950', '1960', '1970', '1980'], ans: 2},
+  {q: 'गंगा की कौन सी सहायक नदी पठारी क्षेत्र से आती है?', opts: ['गोमती', 'घाघरा', 'सोन', 'रामगंगा'], ans: 3},
+  {q: 'धौलीगंगा और अलकनंदा का संगम किस प्रयाग में होता है?', opts: ['रुद्रप्रयाग', 'देवप्रयाग', 'विष्णुप्रयाग', 'कर्णप्रयाग'], ans: 1},
+  {q: 'किस नदी के किनारे श्रीनगर शहर स्थित है?', opts: ['चिनाब', 'झेलम', 'सिंधु', 'रावी'], ans: 2},
+  {q: 'भारत में "लूणी" नदी किस नदी प्रणाली का हिस्सा है?', opts: ['गंगा', 'ब्रह्मपुत्र', 'सिंधु', 'यह अंतर्देशीय (Inland) नदी है'], ans: 4},
+  {q: 'शारदा (काली/महाकाली) नदी गंगा की सहायक बनने से पहले किस नदी से मिलती है?', opts: ['गंडक', 'कोसी', 'घाघरा', 'रामगंगा'], ans: 3},
+  {q: 'रावी नदी का उद्गम स्थल कौन सा दर्रा है?', opts: ['बड़ालाचा दर्रा', 'रोहतांग दर्रा', 'शिपकी ला', 'जोजी ला'], ans: 2},
+  {q: 'कौन सी नदी भारत में "U-Turn" लेकर प्रवेश करती है?', opts: ['सिंधु', 'गंगा', 'ब्रह्मपुत्र', 'सतलज'], ans: 3},
+  {q: 'भारत की कौन सी नदी, जो गंगा के दाहिने किनारे की प्रमुख सहायक है, सबसे पहले पठारी क्षेत्र से निकलती है?', opts: ['कोसी', 'दामोदर', 'सोन', 'चंबल'], ans: 3},
+  {q: 'कौन सी गंगा की सहायक नदी हिमालय से नहीं निकलती है?', opts: ['गोमती', 'घाघरा', 'रामगंगा', 'कोसी'], ans: 1},
+  {q: 'ब्यास और सतलज नदी किस स्थान पर मिलती हैं?', opts: ['रोपड़', 'हरीके', 'भाखड़ा', 'पठानकोट'], ans: 2},
+  {q: 'तिब्बत में मानसरोवर झील के पास से कौन सी तीन नदियाँ निकलती हैं?', opts: ['गंगा, यमुना, ब्रह्मपुत्र', 'सिंधु, सतलज, ब्रह्मपुत्र', 'चिनाब, रावी, झेलम', 'गंडक, कोसी, घाघरा'], ans: 2},
+  {q: 'सिंधु नदी किस पर्वत श्रृंखलाओं के बीच बहती है?', opts: ['पीर पंजाल और धौलाधार', 'शिवालिक और निम्न हिमालय', 'लद्दाख और जास्कर', 'महान हिमालय और काराकोरम'], ans: 3},
+  {q: 'गंगा नदी का अंतिम मुहाना (End point) कहाँ है?', opts: ['अरब सागर', 'हिन्द महासागर', 'बंगाल की खाड़ी', 'खम्भात की खाड़ी'], ans: 3},
+  {q: 'किस नदी को नेपाल में "नारायणी" के नाम से जाना जाता है?', opts: ['कोसी', 'गंडक', 'घाघरा', 'रामगंगा'], ans: 2},
+  {q: 'गंगा नदी को राष्ट्रीय नदी कब घोषित किया गया था?', opts: ['2004', '2006', '2008', '2010'], ans: 3},
+  {q: 'हिमालयी नदियाँ किस प्रकार की घाटियाँ बनाती हैं?', opts: ['V आकार की घाटी', 'U आकार की घाटी', 'I आकार की घाटी', 'इनमें से कोई नहीं'], ans: 1},
+  {q: 'गंगा नदी द्वारा निर्मित सबसे बड़ा गॉर्ज (Gorge) कहाँ है?', opts: ['शिवालिक में', 'ऋषिकेश में', 'हरिद्वार से पहले', 'गंगा कोई गॉर्ज नहीं बनाती'], ans: 4},
+  {q: 'झेलम नदी पाकिस्तान में प्रवेश करने से पहले किस झील से होकर गुजरती है?', opts: ['डल झील', 'वलूर झील', 'मानसर झील', 'नैनीताल झील'], ans: 1},
+  {q: 'कौन सी गंगा की सहायक नदी बाएँ किनारे से नहीं मिलती है?', opts: ['गोमती', 'घाघरा', 'सोन', 'गंडक'], ans: 3},
+  {q: 'मानस नदी किस प्रमुख नदी प्रणाली की सहायक नदी है?', opts: ['गंगा', 'ब्रह्मपुत्र', 'महानदी', 'कावेरी'], ans: 2},
+  {q: 'कोसी नदी का उद्गम स्थल किस देश में है?', opts: ['भारत', 'चीन', 'नेपाल', 'भूटान'], ans: 2},
+  {q: 'किस नदी के किनारे बद्रीनाथ का प्रसिद्ध मंदिर स्थित है?', opts: ['भागीरथी', 'अलकनंदा', 'मंदाकिनी', 'धौलीगंगा'], ans: 2},
+  {q: 'घाघरा नदी को नेपाल में किस नाम से जाना जाता है?', opts: ['नारायणी', 'कर्णाली', 'महाकाली', 'त्रिशुली'], ans: 2},
+  {q: 'सिंधु नदी भारत में किस जगह प्रवेश करती है?', opts: ['लेह', 'गिलगित', 'दमचौक', 'चिल्लास'], ans: 3},
+  {q: 'पंच प्रयाग में सबसे अंतिम प्रयाग कौन सा है?', opts: ['विष्णुप्रयाग', 'कर्णप्रयाग', 'नंदप्रयाग', 'देवप्रयाग'], ans: 4},
+  {q: 'ब्यास नदी किस राज्य में पूरी तरह से बहती है और सतलज में मिल जाती है?', opts: ['पंजाब', 'हरियाणा', 'हिमाचल प्रदेश', 'जम्मू और कश्मीर'], ans: 3},
+  {q: 'गंगा नदी की वह शाखा जो बंगाल में दक्षिण की ओर बहती है और बंगाल की खाड़ी में गिरती है?', opts: ['पद्मा', 'मेघना', 'हुगली', 'भागीरथी'], ans: 3},
+  {q: 'ब्रह्मपुत्र नदी का प्रवाह मार्ग किन तीन देशों से होकर गुजरता है?', opts: ['भारत, चीन, नेपाल', 'चीन, भारत, बांग्लादेश', 'भारत, बांग्लादेश, म्यांमार', 'चीन, भारत, नेपाल'], ans: 2},
+  {q: 'अलकनंदा और पिंडर नदी किस स्थान पर मिलती हैं?', opts: ['रुद्रप्रयाग', 'कर्णप्रयाग', 'नंदप्रयाग', 'विष्णुप्रयाग'], ans: 3},
+];
+
+const container = document.getElementById('questions');
+
+questions.forEach((item, index) => {
+  const div = document.createElement('div');
+  div.className = 'question';
+  div.innerHTML = `<p><strong>${index + 1}. ${item.q}</strong></p>` +
+    item.opts.map((opt, i) => {
+      const letter = String.fromCharCode(65 + i);
+      const key = imageMap[opt] || opt.replace(/\s/g, '').toLowerCase();
+      const imgPath = `img/${key}.jpg`;
+      return `<a class='option' href='${imgPath}' target='_blank'>(${letter}) ${opt} <img src='${imgPath}' alt='${opt}'></a>`;
+    }).join('');
+  container.appendChild(div);
+
+  const ans = document.createElement('div');
+  ans.className = 'correct';
+  ans.textContent = '✔ सही उत्तर: ' + item.opts[item.ans - 1];
+  div.appendChild(ans);
+  container.appendChild(div);
+});
+</script>
+
+<p style="text-align:center; color:gray;">© 2025 | Designed for River System Revision by Yograj Kumar</p>
+</body>
+</html>
