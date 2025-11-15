@@ -44,10 +44,26 @@
         border-bottom: none;
     }
 
+    .tab {
+    min-width: 120px;     /* Makes all tabs same width */
+    text-align: center;
+    }
+
     .tab.active {
         background: #ffffff;
         font-weight: bold;
         border-bottom: 2px solid white;
+    }
+
+    .tab-bar {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;  /* hide scrollbar (Firefox) */
+    }
+
+.tab-bar::-webkit-scrollbar {
+    display: none;          /* hide scrollbar (Chrome/Safari) */
     }
 
     /* Left Pane */
@@ -120,6 +136,23 @@
     }
 
 </style>
+
+<style>
+    @media (max-width: 600px) {
+        .tab {
+            min-width: 100px;
+            padding: 8px 14px;
+            font-size: 14px;
+        }
+        .hamburger {
+            margin-right: 10px;
+        }
+        .content {
+            padding: 15px;
+        }
+    }
+</style>
+
 </head>
 <body>
 
