@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>River System Project</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #e8f3ff;
+        color: #033249;
+        overflow: hidden;
+    }
+
+    /* Top Tab Bar */
+    .tab-bar {
+        display: flex;
+        background: #ffffff;
+        border-bottom: 2px solid #c4d7e6;
+        padding: 8px;
+        align-items: center;
+    }
+
+    .hamburger {
+        font-size: 22px;
+        cursor: pointer;
+        margin-right: 20px;
+        padding: 5px 10px;
+        border-radius: 6px;
+    }
+
+    .hamburger:hover {
+        background: #d7e9f7;
+    }
+
+    .tab {
+        padding: 10px 18px;
+        margin-right: 8px;
+        background: #d4e9f9;
+        border-radius: 10px 10px 0 0;
+        cursor: pointer;
+        border: 1px solid #aac6dd;
+        border-bottom: none;
+    }
+
+    .tab.active {
+        background: #ffffff;
+        font-weight: bold;
+        border-bottom: 2px solid white;
+    }
+
+    /* Left Pane */
+    .side-pane {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 240px;
+        height: 100%;
+        background: #ffffff;
+        border-right: 2px solid #c4d7e6;
+        padding: 20px;
+        box-sizing: border-box;
+        transition: 0.3s ease;
+        overflow-y: auto;
+    }
+
+    .side-pane.open {
+        left: 0;
+    }
+
+    .side-pane h2 {
+        margin-top: 0;
+    }
+
+    .side-pane a {
+        display: block;
+        padding: 10px 0;
+        color: #033249;
+        text-decoration: none;
+        border-bottom: 1px solid #d7e9f7;
+        font-size: 16px;
+    }
+
+    .side-pane a:hover {
+        background: #e9f4ff;
+        padding-left: 5px;
+        transition: 0.2s;
+    }
+
+    /* Content */
+    .content {
+        padding: 20px;
+        height: calc(100vh - 50px);
+        overflow-y: auto;
+    }
+
+    /* Home Page Styling */
+    .home {
+        text-align: center;
+        padding: 40px;
+    }
+
+    .home h1 {
+        font-size: 36px;
+        margin-bottom: 10px;
+    }
+
+    .home p {
+        font-size: 18px;
+        opacity: 0.8;
+    }
+
+    .river-art {
+        width: 100%;
+        max-width: 500px;
+        margin: 30px auto;
+        display: block;
+        opacity: 0.9;
+    }
+
+</style>
+</head>
+<body>
+
+<!-- Left Pane -->
+<div id="sidePane" class="side-pane">
+    <h2>All Pages</h2>
+    <a href="#" onclick="openTab('home')">Home</a>
+    <a href="#" onclick="openTab('page1')">Peninsular Rivers</a>
+    <a href="#" onclick="openTab('page2')">Peninsular Rivers</a>
+    <a href="#" onclick="openTab('page3')">Page 3</a>
+    <!-- Add unlimited more links here -->
+</div>
+
+<!-- Tab Bar -->
+<div class="tab-bar">
+    <div class="hamburger" onclick="togglePane()">☰</div>
+    <div id="tab-home" class="tab active" onclick="openTab('home')">Home</div>
+    <div id="tab-page1" class="tab" onclick="openTab('page1')">Peninsular Rivers</div>
+    <div id="tab-page2" class="tab" onclick="openTab('page2')">Peninsular Rivers</div>
+    <div id="tab-page3" class="tab" onclick="openTab('page3')">Page 3</div>
+    <!-- Add more tabs automatically by copy-paste -->
+</div>
+
+<!-- Content Area -->
+<div id="content" class="content">
+
+    <!-- HOME CONTENT -->
+    <div id="content-home" class="home">
+        <h1>Indian River System</h1>
+        <p>Welcome! Explore Objective Questions & Solutions of Indian Rivers.</p>
+        <img class="river-art" src="img/sample_river_theme.jpg" alt="River Theme" />
+        <p>Use the tabs above or the side menu to navigate through different chapters.</p>
+    </div>
+
+    <!-- PAGE 1 -->
+    <div id="content-page1" style="display:none; height:100%;">
+    <iframe src="Peninsular-River 1.html"
+            style="width:100%; height:100%; border:none;"></iframe>
+    </div>
+    <!-- PAGE 2 -->
+    <div id="content-page2" style="display:none; height:100%;">
+    <iframe src="Peninsular-River 2.html"
+            style="width:100%; height:100%; border:none;"></iframe>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div id="content-page3" style="display:none;">
+        <h2>Page 3 Content</h2>
+        <p>Third page content will appear here.</p>
+    </div>
+
+</div>
+
+<script>
+function togglePane() {
+    document.getElementById('sidePane').classList.toggle('open');
+}
+
+function openTab(tab) {
+    document.addEventListener("click", function(e) {
+    const pane = document.getElementById("sidePane");
+    const hamburger = document.querySelector(".hamburger");
+
+    // If pane is open and click is outside pane AND not on hamburger → close it
+    if (pane.classList.contains("open") &&
+        !pane.contains(e.target) &&
+        !hamburger.contains(e.target))
+    {
+        pane.classList.remove("open");
+    }
+});
+
+    let sections = document.querySelectorAll('[id^="content-"]');
+    sections.forEach(sec => sec.style.display = 'none');
+
+    document.getElementById('content-' + tab).style.display = 'block';
+
+    let tabs = document.querySelectorAll('.tab');
+    tabs.forEach(t => t.classList.remove('active'));
+
+    document.getElementById('tab-' + tab).classList.add('active');
+}
+</script>
+
+</body>
+</html>
