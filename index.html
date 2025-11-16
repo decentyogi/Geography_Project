@@ -5,12 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>River System Project</title>
 <style>
+    :root{
+        --accent:#d4e9f9;
+        --accent-border:#aac6dd;
+        --bg:#e8f3ff;
+        --text:#033249;
+        --pane-width:260px;
+    }
+    *{box-sizing:border-box}
+    html,body{
+        height:100%;
+        margin:0;
+    }
     body {
         margin: 0;
         font-family: Arial, sans-serif;
-        background: #e8f3ff;
-        color: #033249;
-        overflow: hidden;
+        background: var(--bg);
+        color: var(--text);
+        /* allow page scroll instead of hiding it */
+        overflow: auto;
     }
 
     /* Top Tab Bar */
@@ -20,6 +33,9 @@
         border-bottom: 2px solid #c4d7e6;
         padding: 8px;
         align-items: center;
+        position: sticky;
+        top:0;
+        z-index: 5; /* keep tabs above content */
     }
 
     .hamburger {
@@ -28,25 +44,35 @@
         margin-right: 20px;
         padding: 5px 10px;
         border-radius: 6px;
+        user-select:none;
     }
 
     .hamburger:hover {
         background: #d7e9f7;
     }
 
-    .tab {
-        padding: 10px 18px;
-        margin-right: 8px;
-        background: #d4e9f9;
-        border-radius: 10px 10px 0 0;
-        cursor: pointer;
-        border: 1px solid #aac6dd;
-        border-bottom: none;
+    .tabs-container {
+        display:flex;
+        gap:8px;
+        overflow-x:auto;
+        white-space:nowrap;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
     }
+    .tabs-container::-webkit-scrollbar{display:none}
 
     .tab {
-    min-width: 120px;     /* Makes all tabs same width */
-    text-align: center;
+        padding: 10px 14px;
+        min-width: 110px;
+        margin-right: 0;
+        background: var(--accent);
+        border-radius: 10px 10px 0 0;
+        cursor: pointer;
+        border: 1px solid var(--accent-border);
+        border-bottom: none;
+        text-align:center;
+        flex: 0 0 auto; /* prevent shrinking */
+        font-size: 15px;
     }
 
     .tab.active {
@@ -55,60 +81,58 @@
         border-bottom: 2px solid white;
     }
 
-    .tab-bar {
-    display: flex;
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: none;  /* hide scrollbar (Firefox) */
-    }
-
-.tab-bar::-webkit-scrollbar {
-    display: none;          /* hide scrollbar (Chrome/Safari) */
-    }
-
     /* Left Pane */
     .side-pane {
         position: fixed;
         top: 0;
-        left: -260px;
-        width: 240px;
+        left: calc(-1 * var(--pane-width));
+        width: var(--pane-width);
         height: 100%;
         background: #ffffff;
         border-right: 2px solid #c4d7e6;
         padding: 20px;
         box-sizing: border-box;
-        transition: 0.3s ease;
+        transition: transform 280ms cubic-bezier(.2,.9,.2,1);
+        transform: translateX(0);
+        z-index: 20; /* above everything */
         overflow-y: auto;
+        will-change: transform;
+        touch-action: pan-y;
     }
+    /* when open we translate in */
+    .side-pane.open{ transform: translateX(calc(var(--pane-width))); /* moves pane into view */ }
 
-    .side-pane.open {
-        left: 0;
+    /* overlay to prevent clicks and dim content when pane open */
+    .overlay{
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.15);
+        z-index: 15;
+        display:none;
     }
+    .overlay.show{ display:block; }
 
-    .side-pane h2 {
-        margin-top: 0;
-    }
-
+    .side-pane h2 { margin-top: 0; }
     .side-pane a {
-        display: block;
-        padding: 10px 0;
-        color: #033249;
+        display:block;
+        padding: 10px 8px;
+        color: var(--text);
         text-decoration: none;
-        border-bottom: 1px solid #d7e9f7;
+        border-bottom: 1px solid #f0f6fb;
         font-size: 16px;
     }
-
     .side-pane a:hover {
         background: #e9f4ff;
         padding-left: 5px;
-        transition: 0.2s;
+        transition: padding-left 0.18s;
     }
 
     /* Content */
     .content {
         padding: 20px;
-        height: calc(100vh - 50px);
-        overflow-y: auto;
+        /* allow full height scrolling under sticky tabs */
+        min-height: calc(100vh - 56px);
+        overflow: visible;
     }
 
     /* Home Page Styling */
@@ -117,74 +141,75 @@
         padding: 40px;
     }
 
-    .home h1 {
-        font-size: 36px;
-        margin-bottom: 10px;
-    }
-
-    .home p {
-        font-size: 18px;
-        opacity: 0.8;
-    }
+    .home h1 { font-size: 36px; margin-bottom: 10px; }
+    .home p { font-size: 18px; opacity: 0.9; }
 
     .river-art {
         width: 100%;
-        max-width: 500px;
+        max-width: 600px;
         margin: 30px auto;
         display: block;
-        opacity: 0.9;
+        opacity: 0.95;
+        border-radius:8px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     }
 
-</style>
+    /* iframe wrappers take remaining height so they don't overflow page in mobile */
+    .page-frame {
+        width:100%;
+        height: calc(100vh - 120px);
+        border: none;
+        min-height: 400px;
+    }
 
-<style>
+    /* responsive tweaks */
+    @media (max-width: 900px){
+        .tab { min-width: 100px; font-size:14px; padding:8px 12px; }
+        .home h1{ font-size:28px; }
+        .side-pane{ width: 260px; }
+        .page-frame{ height: calc(100vh - 130px); }
+    }
     @media (max-width: 600px) {
-        .tab {
-            min-width: 100px;
-            padding: 8px 14px;
-            font-size: 14px;
-        }
-        .hamburger {
-            margin-right: 10px;
-        }
-        .content {
-            padding: 15px;
-        }
+        .tab { min-width: 90px; padding:7px 10px; font-size:13px; }
+        .hamburger { margin-right: 8px; }
+        .content { padding: 12px; }
+        .river-art { max-width: 420px; }
     }
 </style>
-
 </head>
 <body>
 
 <!-- Left Pane -->
-<div id="sidePane" class="side-pane">
+<div id="sidePane" class="side-pane" aria-hidden="true">
     <h2>All Pages</h2>
-    <a href="#" onclick="openTab('home')">Home</a>
-    <a href="#" onclick="openTab('page1')">Peninsular Rivers</a>
-    <a href="#" onclick="openTab('page2')">Peninsular Rivers</a>
-    <a href="#" onclick="openTab('page3')">Himalayan Rivers</a>
-    <a href="#" onclick="openTab('page4')">Himalayan Rivers</a>
-    <a href="#" onclick="openTab('page5')">Waterfall Questions</a>
-    <a href="#" onclick="openTab('page6')">Waterfall Questions</a>
-    <!-- Add unlimited more links here -->
+    <a href="#" data-target="home">Home</a>
+    <a href="#" data-target="page1">Peninsular Rivers</a>
+    <a href="#" data-target="page2">Peninsular Rivers</a>
+    <a href="#" data-target="page3">Himalayan Rivers</a>
+    <a href="#" data-target="page4">Himalayan Rivers</a>
+    <a href="#" data-target="page5">Waterfall Questions</a>
+    <a href="#" data-target="page6">Waterfall Questions</a>
 </div>
+
+<!-- overlay -->
+<div id="overlay" class="overlay" tabindex="-1" aria-hidden="true"></div>
 
 <!-- Tab Bar -->
 <div class="tab-bar">
-    <div class="hamburger" onclick="togglePane()">☰</div>
-    <div id="tab-home" class="tab active" onclick="openTab('home')">Home</div>
-    <div id="tab-page1" class="tab" onclick="openTab('page1')">Peninsular Rivers</div>
-    <div id="tab-page2" class="tab" onclick="openTab('page2')">Peninsular Rivers</div>
-    <div id="tab-page3" class="tab" onclick="openTab('page3')">Himalayan Rivers</div>
-    <div id="tab-page3" class="tab" onclick="openTab('page4')">Himalayan Rivers</div>
-    <div id="tab-page3" class="tab" onclick="openTab('page5')">Waterfall Questions</div>
-    <div id="tab-page3" class="tab" onclick="openTab('page6')">Waterfall Questions</div>
-    <!-- Add more tabs automatically by copy-paste -->
+    <div id="hamburger" class="hamburger" role="button" aria-label="Open menu">☰</div>
+    <div class="tabs-container" id="tabsContainer">
+        <div class="tab active" data-target="home" id="tab-home">Home</div>
+        <div class="tab" data-target="page1" id="tab-page1">Peninsular Rivers</div>
+        <div class="tab" data-target="page2" id="tab-page2">Peninsular Rivers</div>
+        <div class="tab" data-target="page3" id="tab-page3">Himalayan Rivers</div>
+        <div class="tab" data-target="page4" id="tab-page4">Himalayan Rivers</div>
+        <div class="tab" data-target="page5" id="tab-page5">Waterfall Questions</div>
+        <div class="tab" data-target="page6" id="tab-page6">Waterfall Questions</div>
+    </div>
 </div>
 
 <!-- Content Area -->
 <div id="content" class="content">
-
     <!-- HOME CONTENT -->
     <div id="content-home" class="home">
         <h1>Indian River System</h1>
@@ -194,71 +219,195 @@
     </div>
 
     <!-- PAGE 1 -->
-    <div id="content-page1" style="display:none; height:100%;">
-    <iframe src="Peninsular-River 1.html"
-            style="width:100%; height:100%; border:none;"></iframe>
+    <div id="content-page1" style="display:none;">
+        <iframe class="page-frame" src="Peninsular-River 1.html" title="Peninsular 1"></iframe>
     </div>
     <!-- PAGE 2 -->
-    <div id="content-page2" style="display:none; height:100%;">
-    <iframe src="Peninsular-River 2.html"
-            style="width:100%; height:100%; border:none;"></iframe>
+    <div id="content-page2" style="display:none;">
+        <iframe class="page-frame" src="Peninsular-River 2.html" title="Peninsular 2"></iframe>
     </div>
 
     <!-- PAGE 3 -->
-    <div id="content-page3" style="display:none; height:100%;">
-    <iframe src="Himalayan-River-System1.html"
-            style="width:100%; height:100%; border:none;"></iframe>
+    <div id="content-page3" style="display:none;">
+        <iframe class="page-frame" src="Himalayan-River-System1.html" title="Himalayan 1"></iframe>
     </div>
 
     <!-- PAGE 4 -->
-    <div id="content-page4" style="display:none; height:100%;">
-    <iframe src="Himalayan-River-System2.html"
-            style="width:100%; height:100%; border:none;"></iframe>
+    <div id="content-page4" style="display:none;">
+        <iframe class="page-frame" src="Himalayan-River-System2.html" title="Himalayan 2"></iframe>
     </div>
 
     <!-- PAGE 5 -->
-    <div id="content-page5" style="display:none; height:100%;">
-    <iframe src="Waterfall-Questions1.html"
-            style="width:100%; height:100%; border:none;"></iframe>
+    <div id="content-page5" style="display:none;">
+        <iframe class="page-frame" src="Waterfall-Questions1.html" title="Waterfalls 1"></iframe>
     </div>
 
     <!-- PAGE 6 -->
-    <div id="content-page6" style="display:none; height:100%;">
-    <iframe src="Waterfall-Questions2.html"
-            style="width:100%; height:100%; border:none;"></iframe>
+    <div id="content-page6" style="display:none;">
+        <iframe class="page-frame" src="Waterfall-Questions2.html" title="Waterfalls 2"></iframe>
     </div>
-
 </div>
 
 <script>
-function togglePane() {
-    document.getElementById('sidePane').classList.toggle('open');
+/* ====== Pane open/close and overlay logic ====== */
+const pane = document.getElementById('sidePane');
+const overlay = document.getElementById('overlay');
+const hamburger = document.getElementById('hamburger');
+
+function setPaneOpen(open){
+    if(open){
+        pane.classList.add('open');
+        pane.setAttribute('aria-hidden','false');
+        overlay.classList.add('show');
+        overlay.setAttribute('aria-hidden','false');
+    } else {
+        pane.classList.remove('open');
+        pane.setAttribute('aria-hidden','true');
+        overlay.classList.remove('show');
+        overlay.setAttribute('aria-hidden','true');
+    }
 }
 
-function openTab(tab) {
-    document.addEventListener("click", function(e) {
-    const pane = document.getElementById("sidePane");
-    const hamburger = document.querySelector(".hamburger");
-
-    // If pane is open and click is outside pane AND not on hamburger → close it
-    if (pane.classList.contains("open") &&
-        !pane.contains(e.target) &&
-        !hamburger.contains(e.target))
-    {
-        pane.classList.remove("open");
-    }
+/* toggle on hamburger */
+hamburger.addEventListener('click', e => {
+    setPaneOpen(!pane.classList.contains('open'));
 });
 
-    let sections = document.querySelectorAll('[id^="content-"]');
-    sections.forEach(sec => sec.style.display = 'none');
+/* click overlay closes pane */
+overlay.addEventListener('click', e => setPaneOpen(false));
 
-    document.getElementById('content-' + tab).style.display = 'block';
+/* clicking any link inside pane opens tab + closes pane */
+pane.querySelectorAll('a[data-target]').forEach(a=>{
+    a.addEventListener('click', e=>{
+        e.preventDefault();
+        const t = a.getAttribute('data-target');
+        openTab(t, {closePane:true});
+    });
+});
 
-    let tabs = document.querySelectorAll('.tab');
-    tabs.forEach(t => t.classList.remove('active'));
+/* Keep a single document click listener to close pane if open and user clicks outside */
+document.addEventListener('click', function(e){
+    if(!pane.classList.contains('open')) return;
+    // if click target is inside pane or hamburger or overlay -> do nothing
+    if(pane.contains(e.target) || hamburger.contains(e.target) || overlay.contains(e.target)) return;
+    // otherwise close
+    setPaneOpen(false);
+}, true); // capture true to catch earlier
 
-    document.getElementById('tab-' + tab).classList.add('active');
+/* Close pane on Escape */
+document.addEventListener('keydown', e=>{
+    if(e.key === 'Escape' && pane.classList.contains('open')) setPaneOpen(false);
+});
+
+/* ====== Tabs logic ====== */
+function openTab(tab, opts = {}){
+    // hide all content
+    document.querySelectorAll('[id^="content-"]').forEach(sec=> sec.style.display = 'none');
+    const target = document.getElementById('content-' + tab);
+    if(!target){
+        // fallback to home if missing
+        document.getElementById('content-home').style.display = 'block';
+    } else {
+        target.style.display = 'block';
+        // scroll the content to top for better UX on mobile
+        window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    // update active tab
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    const tabEl = document.querySelector('.tab[data-target="'+tab+'"]');
+    if(tabEl) tabEl.classList.add('active');
+
+    // if requested close the pane
+    if(opts.closePane) setPaneOpen(false);
 }
+
+/* make top tabs clickable */
+document.querySelectorAll('.tab[data-target]').forEach(t=>{
+    t.addEventListener('click', e=>{
+        const targ = t.getAttribute('data-target');
+        openTab(targ, {closePane: true});
+    });
+});
+
+/* ====== Touch / drag to slide the side pane ====== */
+let touchStartX = 0;
+let currentTranslate = 0;
+let dragging = false;
+
+pane.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    currentTranslate = pane.classList.contains('open') ? parseFloat(getComputedStyle(pane).transform.split(',')[4] || 0) : 0;
+    dragging = true;
+}, {passive:true});
+
+pane.addEventListener('touchmove', function(e){
+    if(!dragging || e.touches.length !== 1) return;
+    const dx = e.touches[0].clientX - touchStartX;
+    // only allow left-drag to close when open (dx negative), or right-drag to open when closed (dx positive)
+    // We'll translate pane visually for better feel (temporary)
+    const maxMove = parseInt(getComputedStyle(pane).width);
+    let translateX = pane.classList.contains('open') ? Math.min(maxMove, maxMove + dx) : Math.max(0, Math.min(maxMove, dx));
+    // convert to transform such that open => translateX(var(--pane-width)) (we simulate by inline style)
+    pane.style.transition = 'none';
+    pane.style.transform = `translateX(${translateX}px)`;
+    // overlay fade according to translateX
+    const alpha = (translateX / maxMove) * 0.15;
+    overlay.style.display = 'block';
+    overlay.style.background = `rgba(0,0,0,${alpha})`;
+}, {passive:true});
+
+pane.addEventListener('touchend', function(e){
+    if(!dragging) return;
+    dragging = false;
+    pane.style.transition = '';
+    // compute final position from computed transform
+    const matrix = getComputedStyle(pane).transform;
+    let tx = 0;
+    if(matrix && matrix !== 'none'){
+        tx = parseFloat(matrix.split(',')[4]);
+    } else {
+        tx = pane.classList.contains('open') ? parseInt(getComputedStyle(pane).width) : 0;
+    }
+    const threshold = parseInt(getComputedStyle(pane).width) * 0.5;
+    if(tx > threshold){
+        setPaneOpen(true);
+        pane.style.transform = ''; // let CSS handle final transform
+    } else {
+        setPaneOpen(false);
+        pane.style.transform = '';
+    }
+    overlay.style.background = '';
+});
+
+/* also allow swipe from left edge to open pane on mobile */
+let edgeStart = null;
+document.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1) return;
+    const x = e.touches[0].clientX;
+    const edgeWidth = 18; // px from left edge
+    if(x <= edgeWidth && !pane.classList.contains('open')){
+        edgeStart = x;
+    } else {
+        edgeStart = null;
+    }
+}, {passive:true});
+
+document.addEventListener('touchmove', function(e){
+    if(edgeStart === null) return;
+    const dx = e.touches[0].clientX - edgeStart;
+    if(dx > 30){
+        setPaneOpen(true);
+        edgeStart = null;
+    }
+}, {passive:true});
+
+/* ====== On load, ensure initial content visible ====== */
+window.addEventListener('load', function(){
+    // ensure home visible
+    openTab('home', {closePane:false});
+});
 </script>
 
 </body>
