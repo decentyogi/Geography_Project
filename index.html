@@ -410,5 +410,106 @@ window.addEventListener('load', function(){
 });
 </script>
 
+<script>
+/* ---------------- BASIC OPEN/CLOSE LOGIC ---------------- */
+const pane = document.getElementById('sidePane');
+const overlay = document.getElementById('overlay');
+const hamburger = document.getElementById('hamburger');
+
+function openPane(){
+    pane.classList.add("open");
+    overlay.classList.add("show");
+}
+function closePane(){
+    pane.classList.remove("open");
+    overlay.classList.remove("show");
+}
+
+/* Toggle */
+hamburger.addEventListener('click', () => {
+    if(pane.classList.contains("open")) closePane();
+    else openPane();
+});
+
+/* Close when overlay is clicked */
+overlay.addEventListener("click", closePane);
+
+/* Close when clicking outside pane */
+document.addEventListener("click", e=>{
+    if(!pane.classList.contains("open")) return;
+    if(pane.contains(e.target) || hamburger.contains(e.target)) return;
+    closePane();
+}, true);
+
+/* Close with Esc */
+document.addEventListener("keydown", e=>{
+    if(e.key==="Escape") closePane();
+});
+
+/* ---------------- TAB LOGIC ---------------- */
+function openTab(target){
+    document.querySelectorAll('[id^="content-"]').forEach(x=>x.style.display="none");
+    document.getElementById("content-"+target).style.display="block";
+
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    const tabEl=document.querySelector('.tab[data-target="'+target+'"]');
+    if(tabEl) tabEl.classList.add("active");
+
+    window.scrollTo({top:0,behavior:"smooth"});
+    closePane();
+}
+
+/* Tabs click */
+document.querySelectorAll(".tab").forEach(t=>{
+    t.addEventListener("click", ()=>{
+        openTab(t.dataset.target);
+    });
+});
+
+/* Pane links click */
+pane.querySelectorAll("a[data-target]").forEach(a=>{
+    a.addEventListener("click", e=>{
+        e.preventDefault();
+        openTab(a.dataset.target);
+    });
+});
+
+/* -------------------- MOBILE SWIPE OPEN -------------------- */
+/* Very safe: no inline transforms, no matrix(), no freezes */
+
+let startX = 0;
+let swiping = false;
+
+document.addEventListener("touchstart", e=>{
+    if(e.touches.length !== 1) return;
+
+    /* Start swipe only from left edge */
+    if(e.touches[0].clientX < 18 && !pane.classList.contains("open")){
+        swiping = true;
+        startX = e.touches[0].clientX;
+    }
+},{passive:true});
+
+document.addEventListener("touchmove", e=>{
+    if(!swiping) return;
+
+    const dx = e.touches[0].clientX - startX;
+
+    if(dx > 60){
+        openPane();
+        swiping = false;
+    }
+},{passive:true});
+
+document.addEventListener("touchend", ()=>{
+    swiping = false;
+});
+
+/* -------------------- LOAD DEFAULT -------------------- */
+window.addEventListener("load", ()=>{
+    openTab("home");
+});
+</script>
+
 </body>
 </html>
