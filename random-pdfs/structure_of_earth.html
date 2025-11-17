@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Modern PDF Workspace</title>
+
+<style>
+    body {
+        margin: 0;
+        background: linear-gradient(135deg, #dfe9f3, #ffffff);
+        font-family: "Poppins", sans-serif;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .topbar {
+        padding: 18px;
+        font-size: 22px;
+        font-weight: 600;
+        backdrop-filter: blur(12px);
+        background: rgba(255,255,255,0.45);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .viewer-box {
+        height: calc(100vh - 70px);
+    }
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+</style>
+</head>
+
+<body>
+    <div class="topbar">📘 Modern Study Mode</div>
+
+    <div class="viewer-box">
+        <iframe src="web/viewer.html?file=../Pdfs/Structure_of_earth_Rocks.pdf"></iframe>
+    </div>
+</body>
+</html>

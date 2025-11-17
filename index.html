@@ -189,6 +189,18 @@
     <a href="#" data-target="page4">Himalayan Rivers</a>
     <a href="#" data-target="page5">Waterfall Questions</a>
     <a href="#" data-target="page6">Waterfall Questions</a>
+    <a href="#" data-target="page7">Structure Of Earth</a>
+    <a href="#" data-target="page8">Great Northern Plain</a>
+    <a href="#" data-target="page9">Peninsular Plateau</a>
+    <a href="#" data-target="page10">Drainage System Of India</a>
+    <a href="#" data-target="page11">Himalayan River System</a>
+    <a href="#" data-target="page12">Ganga River System</a>
+    <a href="#" data-target="page13">Peninsular Rivers</a>
+    <a href="#" data-target="page14">River Facts</a>
+    <a href="#" data-target="page15">Soil</a>
+    <a href="#" data-target="page16">Forest</a>
+
+
 </div>
 
 <!-- overlay -->
@@ -220,32 +232,84 @@
 
     <!-- PAGE 1 -->
     <div id="content-page1" style="display:none;">
-        <iframe class="page-frame" src="Peninsular-River 1.html" title="Peninsular 1"></iframe>
+        <iframe class="page-frame" data-src="Peninsular-River 1.html" title="Peninsular 1"></iframe>
     </div>
     <!-- PAGE 2 -->
     <div id="content-page2" style="display:none;">
-        <iframe class="page-frame" src="Peninsular-River 2.html" title="Peninsular 2"></iframe>
+        <iframe class="page-frame" data-src="Peninsular-River 2.html" title="Peninsular 2"></iframe>
     </div>
 
     <!-- PAGE 3 -->
     <div id="content-page3" style="display:none;">
-        <iframe class="page-frame" src="Himalayan-River-System1.html" title="Himalayan 1"></iframe>
+        <iframe class="page-frame" data-src="Himalayan-River-System1.html" title="Himalayan 1"></iframe>
     </div>
 
     <!-- PAGE 4 -->
     <div id="content-page4" style="display:none;">
-        <iframe class="page-frame" src="Himalayan-River-System2.html" title="Himalayan 2"></iframe>
+        <iframe class="page-frame" data-src="Himalayan-River-System2.html" title="Himalayan 2"></iframe>
     </div>
 
     <!-- PAGE 5 -->
     <div id="content-page5" style="display:none;">
-        <iframe class="page-frame" src="Waterfall-Questions1.html" title="Waterfalls 1"></iframe>
+        <iframe class="page-frame" data-src="Waterfall-Questions1.html" title="Waterfalls 1"></iframe>
     </div>
 
     <!-- PAGE 6 -->
     <div id="content-page6" style="display:none;">
-        <iframe class="page-frame" src="Waterfall-Questions2.html" title="Waterfalls 2"></iframe>
+        <iframe class="page-frame" data-src="Waterfall-Questions2.html" title="Waterfalls 2"></iframe>
     </div>
+
+
+    <!-- PAGE 7 -->
+    <div id="content-page7" style="display:none;">
+        <iframe class="page-frame" data-src="random-pdfs/structure_of_earth.html" title="Structure Of Earth"></iframe>
+    </div>
+
+    <!-- PAGE 8 -->
+    <div id="content-page8" style="display:none;">
+        <iframe class="page-frame" data-src="random-pdfs/great_northern_plain.html" title="Great Northern Plain"></iframe>
+    </div>
+
+    <!-- PAGE 9 -->
+    <div id="content-page9" style="display:none;">
+        <iframe class="page-frame" data-src="random-pdfs/Peninsular-plateau.html" title="Peninsular Plateau"></iframe>
+    </div>
+
+    <!-- PAGE 10 -->
+    <div id="content-page10" style="display:none;">
+        <iframe class="page-frame" data-src="random-pdfs/drainage-system-of-india.html" title="Drainage System Of India"></iframe>
+    </div>
+
+    <!-- PAGE 11 -->
+    <div id="content-page11" style="display:none;">
+        <iframe class="page-frame" data-src="random-pdfs/Himalayan-River-System.html" title="Himalayan River System"></iframe>
+    </div>
+
+    <!-- PAGE 12 -->
+    <div id="content-page12" style="display:none;">
+        <iframe class="page-frame" data-src="random-pdfs/Ganga-River-System.html" title="Ganga River System"></iframe>
+    </div>
+
+    <!-- PAGE 13 -->
+    <div id="content-page13" style="display:none;">
+        <iframe class="page-frame" data-src="random-pdfs/Peninsular-River-System.html" title="Peninsular Rivers"></iframe>
+    </div>
+
+    <!-- PAGE 14 -->
+    <div id="content-page14" style="display:none;">
+        <iframe class="page-frame" data-src="random-pdfs/River-Facts.html" title="River Facts"></iframe>
+    </div>
+
+    <!-- PAGE 15 -->
+    <div id="content-page15" style="display:none;">
+        <iframe class="page-frame" data-src="random-pdfs/soil.html" title="Soil"></iframe>
+    </div>
+
+    <!-- PAGE 16 -->
+    <div id="content-page16" style="display:none;">
+        <iframe class="page-frame" data-src="random-pdfs/forest.html" title="Forest"></iframe>
+    </div>
+
 </div>
 
 <script>
@@ -286,15 +350,27 @@ document.addEventListener("keydown", e=>{
 
 /* ---------------- TAB LOGIC ---------------- */
 function openTab(target){
+    // Hide all pages
     document.querySelectorAll('[id^="content-"]').forEach(x=>x.style.display="none");
-    document.getElementById("content-"+target).style.display="block";
 
-    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-    const tabEl=document.querySelector('.tab[data-target="'+target+'"]');
-    if(tabEl) tabEl.classList.add("active");
+    // Show the selected page
+    const page = document.getElementById("content-" + target);
+    page.style.display = "block";
 
-    window.scrollTo({top:0,behavior:"smooth"});
+    // Lazy-load iframe (ONLY ONCE)
+    const iframe = page.querySelector("iframe");
+    if (iframe && !iframe.src) {
+        iframe.src = iframe.dataset.src;   // <-- this loads the page
+    }
+
+    // Activate tab
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    const t = document.querySelector('.tab[data-target="' + target + '"]');
+    if (t) t.classList.add("active");
+
+    // Close left pane if open
     closePane();
+    window.scrollTo({top:0, behavior:"smooth"});
 }
 
 /* Tabs click */
